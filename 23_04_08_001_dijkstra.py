@@ -60,7 +60,7 @@ class WeightedGraph():
     def removeNode(self, node):
         if node in self.graph:
             edges = list(self.graph[node])
-            for edge in edges:
+            for edge, w in edges:
                 self.removeEdge((node, edge))
             self.graph.pop(node)
 
@@ -78,14 +78,15 @@ class WeightedGraph():
             else:
                 self.graph[n] = [(e, weight)] 
 
-    # Elimina un arco entre nodos
+    # Elimina una arco entre nodos
     # El arco es una lista con los nodos que une
     def removeEdge(self, edge):
         n1, n2 = tuple(edge)
         for n, e in [(n1, n2), (n2, n1)]:
             if n in self.graph:
-                if e in self.graph[n]:
-                    self.graph[n].remove(e)
+                for node, weight in self.graph[n]:
+                    if node == e:
+                        self.graph[n].remove((node, weight))
 
   
 
@@ -207,9 +208,6 @@ def graficar(nodos_resaltados):
             
             canvas.create_text(250 + (x1 + x2) * 100, 250 - (y1 + y2) * 100,
                                text=str(peso), font=('Arial', 14), fill='red')
-            
-
-
 
             if origen in nodos_resaltados and destino in nodos_resaltados:
                 canvas.create_line(250 + x1 * 200, 250 - y1 * 200,
@@ -350,9 +348,6 @@ boton_eliminar = tk.Button(botones, text='Eliminar conexion', command=eliminar_a
 boton_eliminar.grid(row=11, column=1)
 
 #botones para realizar las operaciones
-
-
-
 
 
 label_origen_dijkstra = tk.Label(botones, text='configuracion de algoritmo de dijkstra')
